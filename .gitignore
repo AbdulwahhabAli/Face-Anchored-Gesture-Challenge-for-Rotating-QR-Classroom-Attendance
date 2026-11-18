@@ -1,0 +1,20 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# datasets, results, weights (large / private)
+data/*
+!data/README.md
+runs/
+models/
+*.pt
+*.onnx
+*.tflite
+
+# app state: database, secret key, instructor key, volunteer images
+*.db
+*.sqlite
+data/app/
+tools/

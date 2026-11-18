@@ -1,0 +1,115 @@
+{% extends "_base.html" %}
+{% block title %}Check in{% endblock %}
+{% block head %}
+<script src="/static/camera.js"></script>
+<style>
+  main { max-width:520px; }
+  #gesture { font-size:2.2rem; font-weight:700; text-align:center; margin:6px 0; }
+  .videobox { position:relative; width:100%; aspect-ratio:3/4; background:#000; border-radius:10px; overflow:hidden; }
+  video { width:100%; height:100%; object-fit:cover; transform:scaleX(-1); }
+  .hint { position:absolute; left:0; right:0; bottom:8px; text-align:center; color:#fff; font-size:.9rem;
+          text-shadow:0 1px 3px #000; }
+  .big { width:100%; padding:14px; font-size:1.1rem; margin-top:10px; }
+  #result { font-size:1.1rem; padding:14px; border-radius:10px; margin-top:12px; display:none; }
+  .timer { text-align:center; color:var(--muted); }
+</style>
+{% endblock %}
+{% block body %}
+<main>
+  <h1>Check in</h1>
+  <p class="muted">{{ title }}</p>
+
+  <div class="card" id="step-id">
+    <label for="sid"><b>Your student ID</b></label>
+    <div class="row" style="margin-top:8px">
+      <input type="text" id="sid" inputmode="numeric" autocomplete="off" style="flex:1" placeholder="e.g. 202112345">
+    </div>
+    <button class="big" id="btn-start">Continue</button>
+    <p class="muted timer">This page is valid for <span id="ticket">{{ seconds_left }}</span> s.</p>
+  </div>
+
+  <div class="card" id="step-gesture" style="display:none">
+    <div class="muted" id="who"></div>
+    <div>Hold this gesture <b>next to your face</b>:</div>
+    <div id="gesture"></div>
+    <div class="videobox" id="vbox"><video id="video" playsinline muted></video>
+      <div class="hint">Face and hand both visible</div></div>
+    <input type="file" id="file" accept="image/*" capture="user" style="display:none">
+    <button class="big" id="btn-shot">Take photo</button>
+    <p class="timer"><span id="countdown"></span></p>
+  </div>
+
+  <div id="result"></div>
+  <button class="big secondary" id="btn-retry" style="display:none">Try again</button>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+let challenge = null, timer = null;
+
+function show(msg, ok) {
+  const r = $("result");
+  r.style.display = "block"; r.textContent = msg;
+  r.className = ok ? "ok" : "bad";
+}
+
+async function post(url, fd) {
+  const r = await fetch(url, { method: "POST", body: fd, credentials: "same-origin" });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.detail || ("Error " + r.status));
+  return j;
+}
+
+let ticketLeft = {{ seconds_left }};
+setInterval(() => { ticketLeft = Math.max(0, ticketLeft - 1); $("ticket").textContent = ticketLeft; }, 1000);
+
+async function getChallenge() {
+  $("result").style.display = "none"; $("btn-retry").style.display = "none";
+  const sid = $("sid").value.trim();
+  if (!sid) { $("sid").focus(); return; }
+  const fd = new FormData(); fd.append("student_id", sid);
+  try {
+    const j = await post("/api/challenge", fd);
+    if (j.already_present) { $("step-id").style.display = "none"; show("✅ " + j.name + ", you are already checked in.", true); return; }
+    challenge = j;
+    $("step-id").style.display = "none"; $("step-gesture").style.display = "block";
+    $("who").textContent = j.name + (j.enrolling ? " — first check-in: your face will be enrolled" : "")
+                         + ` · attempts left: ${j.attempts_left}`;
+    $("gesture").textContent = j.text;
+    const live = await SelfieCamera.start($("video"));
+    $("vbox").style.display = live ? "block" : "none";
+    $("btn-shot").textContent = live ? "Take photo" : "Open camera";
+    let left = j.expires_in;
+    clearInterval(timer);
+    $("countdown").textContent = left + " s left";
+    timer = setInterval(() => { left--; $("countdown").textContent = Math.max(0, left) + " s left";
+                                if (left <= 0) clearInterval(timer); }, 1000);
+  } catch (e) { show(e.message, false); }
+}
+
+async function send(blob, source) {
+  clearInterval(timer);
+  $("btn-shot").disabled = true; $("btn-shot").textContent = "Checking…";
+  const fd = new FormData();
+  fd.append("challenge_id", challenge.challenge_id); fd.append("image", blob, "selfie.jpg"); fd.append("source", source);
+  try {
+    const j = await post("/api/verify", fd);
+    $("step-gesture").style.display = "none";
+    show(j.message, j.accepted);
+    if (j.accepted) SelfieCamera.stop();
+    else if (j.attempts_left > 0) { $("btn-retry").style.display = "block"; $("btn-retry").textContent = `Try again (${j.attempts_left} left)`; }
+    else show(j.message + " No attempts left — please see the instructor.", false);
+  } catch (e) { show(e.message, false); }
+  $("btn-shot").disabled = false;
+}
+
+$("btn-start").onclick = getChallenge;
+$("sid").addEventListener("keydown", e => { if (e.key === "Enter") getChallenge(); });
+$("btn-retry").onclick = () => { $("step-gesture").style.display = "none"; getChallenge(); };
+$("btn-shot").onclick = async () => {
+  if (SelfieCamera.live) send(await SelfieCamera.capture($("video")), "camera");
+  else $("file").click();
+};
+$("file").onchange = () => { if ($("file").files[0]) send($("file").files[0], "file"); $("file").value = ""; };
+</script>
+{% endblock %}

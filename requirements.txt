@@ -1,0 +1,25 @@
+# Core CV
+numpy
+opencv-python
+onnxruntime            # ArcFace (MobileFaceNet) + SCRFD face detector, run directly from InsightFace's ONNX files
+mediapipe>=0.10.14     # BlazeFace (Tasks API)
+ultralytics>=8.1       # YOLOv8n (pulls in torch)
+
+# Data / evaluation
+pyyaml
+pandas
+scipy
+matplotlib
+tabulate               # markdown tables in reports
+
+# Web app
+fastapi
+uvicorn[standard]
+python-multipart
+jinja2
+qrcode[pil]
+openpyxl
+
+# Tests
+pytest
+httpx

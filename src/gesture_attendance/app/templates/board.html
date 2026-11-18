@@ -1,0 +1,43 @@
+{% extends "_base.html" %}
+{% block title %}Attendance board{% endblock %}
+{% block head %}
+<style>
+  body { background:#fff; }
+  .wrap { height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; }
+  #qr { width:min(70vh, 90vw); height:min(70vh, 90vw); image-rendering:pixelated; }
+  #title { font-size:1.6rem; font-weight:600; }
+  #count { font-size:2.4rem; font-weight:700; }
+  .bar { width:min(70vh, 90vw); height:6px; background:#e7ebf0; border-radius:3px; overflow:hidden; }
+  #fill { height:100%; background:var(--accent); width:100%; transition:width .45s linear; }
+  #idle { font-size:1.4rem; color:var(--muted); display:none; }
+</style>
+{% endblock %}
+{% block body %}
+<div class="wrap">
+  <div id="title"></div>
+  <img id="qr" alt="check-in QR code">
+  <div class="bar"><div id="fill"></div></div>
+  <div id="count"></div>
+  <div class="muted" id="enroll"></div>
+  <div id="idle">No active session — start one from the instructor page.</div>
+</div>
+<script>
+let lastToken = null;
+async function tick() {
+  try {
+    const s = await (await fetch("/api/board/state", { credentials: "same-origin" })).json();
+    const active = !!s.active;
+    document.getElementById("idle").style.display = active ? "none" : "block";
+    document.getElementById("qr").style.visibility = active ? "visible" : "hidden";
+    if (active) {
+      if (s.token !== lastToken) { document.getElementById("qr").src = "/api/board/qr.png?t=" + s.token; lastToken = s.token; }
+      document.getElementById("title").textContent = s.title;
+      document.getElementById("count").textContent = `Checked in: ${s.present} / ${s.roster}`;
+      document.getElementById("fill").style.width = (100 * s.seconds_left / s.period) + "%";
+      document.getElementById("enroll").textContent = s.enroll_open ? "First-time enrollment is open" : "";
+    }
+  } catch (e) { console.warn(e); }
+}
+tick(); setInterval(tick, 500);
+</script>
+{% endblock %}

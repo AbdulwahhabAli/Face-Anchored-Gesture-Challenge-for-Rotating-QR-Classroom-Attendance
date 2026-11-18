@@ -1,0 +1,14 @@
+# Minimal set to RUN the attendance app (pretrained models only, no training, no torch).
+# For training / the full evaluation use requirements.txt instead.
+numpy
+opencv-python
+onnxruntime
+mediapipe>=0.10.14
+pillow
+pyyaml
+fastapi
+uvicorn[standard]
+python-multipart
+jinja2
+qrcode[pil]
+openpyxl

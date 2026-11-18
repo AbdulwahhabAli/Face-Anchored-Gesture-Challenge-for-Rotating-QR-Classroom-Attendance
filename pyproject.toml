@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gesture-attendance"
+version = "0.1.0"
+description = "Face-anchored gesture challenge for rotating-QR classroom attendance (CSBP441 project)"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Abdulwahhab Ali" }, { name = "Yazan Badawie" }]
+dependencies = [
+    "numpy",
+    "opencv-python",
+    "pyyaml",
+    "pandas",
+    "scipy",
+    "matplotlib",
+    "tabulate",
+    "openpyxl",
+    "onnxruntime",
+    "mediapipe>=0.10.14",
+    "ultralytics>=8.1",
+    "fastapi",
+    "uvicorn[standard]",
+    "python-multipart",
+    "jinja2",
+    "qrcode[pil]",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "httpx"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+gesture_attendance = ["app/templates/*.html", "app/static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

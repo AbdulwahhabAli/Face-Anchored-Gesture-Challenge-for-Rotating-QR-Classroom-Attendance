@@ -1,0 +1,45 @@
+# Default configuration. Paths are relative to the repository root.
+
+# Challenge gestures (HaGRID class names).
+#   like = thumbs-up, peace = peace/V, palm = open palm, fist = fist, one = one finger, ok = OK sign
+# The pretrained MediaPipe backend has no OK class -> 5 gestures. With the YOLO backend
+# (trained on HaGRID) use [like, peace, palm, fist, ok, one]; order = YOLO class ids.
+gestures: [like, peace, palm, fist, one]
+
+models:
+  gesture_backend: mediapipe                # "mediapipe" = pretrained, ready to run | "yolo" = fine-tuned on HaGRID
+  mediapipe_gesture_model: null             # null = auto-download gesture_recognizer.task
+  gesture_min_conf: 0.5                     # MediaPipe gesture score needed to count
+  yolo_weights: models/gesture_yolov8n.pt   # copied here by scripts/train_yolo.py
+  device: cpu                               # "cpu", "0" (first CUDA GPU), ...
+  imgsz: 640
+  yolo_conf: 0.25                           # min detection confidence kept from YOLO
+  # null = auto-download into ~/.cache/gesture_attendance/
+  blazeface_model: null                     # blaze_face_short_range.tflite
+  blazeface_min_conf: 0.5
+  arcface_dir: null                         # folder with det_500m.onnx + w600k_mbf.onnx (InsightFace buffalo_s)
+
+pipeline:
+  mode: roi            # "roi" (ours: face-anchored cascade) or "full" (baseline)
+  face_anchor: blazeface  # "blazeface" (proposal) or "scrfd" (InsightFace detector; finds much smaller faces)
+  roi_scale: 3.0       # ROI side = scale x face box
+  roi_upscale: true    # let the detector up-scale the crop to imgsz (false = paste crop at native resolution)
+  roi_y_shift: 0.5     # shift ROI centre down by this fraction of face height (hands are usually at chin/chest)
+  fallback_full_frame: true   # if no face is found, run on the full frame instead of rejecting
+  fallback_on_no_gesture: true  # live app: if the ROI shows no gesture, also try the full frame
+                                # (predict.py ignores this so the baseline-vs-ROI comparison stays controlled)
+
+verification:
+  face_threshold: 0.35        # cosine similarity; replace with the value from scripts/eval_face.py (LFW)
+  duplicate_face_threshold: 0.50  # enrollment flagged if new face matches another enrolled student this well
+
+app:
+  qr_period_s: 3              # token regenerated every 3 s
+  grace_windows: 1            # also accept the previous token (scan latency)
+  ticket_ttl_s: 120           # time a student has after scanning to finish check-in
+  challenge_ttl_s: 60         # time to take the selfie after the gesture is shown
+  max_attempts: 3             # selfie attempts per student per session
+  max_photo_age_s: 600        # reject uploads whose EXIF capture time is older than this (0 = off)
+  base_url: null              # public URL put in the QR (e.g. https://abc.trycloudflare.com); null = from request
+  db_path: data/app/attendance.db
+  collect_dir: data/classroom  # where /collect saves volunteer test images

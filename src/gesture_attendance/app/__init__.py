@@ -1,0 +1,1 @@
+"""FastAPI attendance web app."""

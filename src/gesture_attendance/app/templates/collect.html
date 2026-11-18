@@ -1,0 +1,62 @@
+{% extends "_base.html" %}
+{% block title %}Collect classroom test set{% endblock %}
+{% block head %}
+<script src="/static/camera.js"></script>
+<style>
+  main { max-width:560px; }
+  .videobox { width:100%; aspect-ratio:3/4; background:#000; border-radius:10px; overflow:hidden; }
+  video { width:100%; height:100%; object-fit:cover; transform:scaleX(-1); }
+  #gesture { font-size:1.8rem; font-weight:700; text-align:center; margin:8px 0; }
+  label { display:block; margin:6px 0; }
+  .big { width:100%; padding:14px; font-size:1.05rem; margin-top:10px; }
+</style>
+{% endblock %}
+{% block body %}
+<main>
+  <h1>Volunteer test-set collection</h1>
+  <div class="card">
+    <label><input type="checkbox" id="consent"> The volunteer has read and signed the consent form
+      (images are used only for evaluating this course project and are not published).</label>
+    <label>Subject ID <input type="text" id="subject" placeholder="s01"></label>
+    <label>Condition
+      <select id="condition">
+        <option value="normal">normal</option>
+        <option value="low_light">low light</option>
+        <option value="far_crowded">far + crowded background</option>
+      </select></label>
+    <label>Background person shows (attack images, optional)
+      <select id="bg"><option value="">— nobody —</option>
+        {% for g in gestures %}<option value="{{ g }}">{{ g }}</option>{% endfor %}</select></label>
+    <label>Main person shows
+      <select id="gsel">{% for g in gestures %}<option value="{{ g }}">{{ g }}</option>{% endfor %}
+        <option value="none">none (no gesture)</option></select></label>
+  </div>
+  <div class="card">
+    <div id="gesture"></div>
+    <div class="videobox" id="vbox"><video id="video" playsinline muted></video></div>
+    <input type="file" id="file" accept="image/*" capture="user" style="display:none">
+    <button class="big" id="shot">Capture &amp; save</button>
+    <p class="muted" id="log"></p>
+  </div>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const showG = () => $("gesture").textContent = $("gsel").value;
+$("gsel").onchange = showG; showG();
+SelfieCamera.start($("video")).then(live => { $("vbox").style.display = live ? "block" : "none"; });
+
+async function save(blob) {
+  if (!$("consent").checked || !$("subject").value.trim()) { alert("Consent and subject ID are required."); return; }
+  const fd = new FormData();
+  fd.append("subject_id", $("subject").value); fd.append("gesture", $("gsel").value);
+  fd.append("condition", $("condition").value); fd.append("background_gesture", $("bg").value);
+  fd.append("consent", "true"); fd.append("image", blob, "img.jpg");
+  const r = await fetch("/api/collect", { method: "POST", body: fd, credentials: "same-origin" });
+  const j = await r.json();
+  $("log").textContent = r.ok ? "saved " + j.saved : "error: " + (j.detail || r.status);
+  if (r.ok) { const s = $("gsel"); s.selectedIndex = (s.selectedIndex + 1) % s.options.length; showG(); }
+}
+$("shot").onclick = async () => SelfieCamera.live ? save(await SelfieCamera.capture($("video"))) : $("file").click();
+$("file").onchange = () => { if ($("file").files[0]) save($("file").files[0]); $("file").value = ""; };
+</script>
+{% endblock %}
