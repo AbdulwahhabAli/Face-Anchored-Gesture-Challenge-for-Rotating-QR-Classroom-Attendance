@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{2.2pt}
+\begin{tabular}{lccccc}
+\toprule
+Pipeline & FRR & FAR$_\text{bg}$ & FAR$_\text{face}$ & FAR$_\text{gest}$ & FAR$_\text{rep}$ \\
+\midrule
+full & 30.1 & 13.6 & 0.65 & 0.95 & 45.2 \\
+ROI $s{=}3$, BlazeFace & 40.4 & 7.1 & 0.58 & 0.70 & 36.7 \\
+ROI $s{=}6$, SCRFD & 15.3 & 0.8 & 0.75 & 0.21 & 46.5 \\
+\bottomrule
+\end{tabular}
+\vspace{-1mm}
+\caption{\textbf{End-to-end} accept/reject (\%; gesture \emph{and} ArcFace, $\tau{=}0.2235$). FRR: genuine check-ins rejected (all conditions). FAR$_\text{bg}$: the challenge is the gesture of the \emph{other} person in a crowded image. FAR$_\text{face}$: another enrolled student's identity is claimed. FAR$_\text{gest}$: a wrong gesture is accepted. FAR$_\text{rep}$: an old photo passes a random challenge within 3 attempts.}
+\label{tab:sec}
+\vspace{-3mm}
+\end{table}

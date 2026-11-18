@@ -14,16 +14,25 @@ from .vision.types import Box
 
 
 def parse_config_name(name: str) -> dict:
-    """'full' | 'roi_s3_up' | 'roi_s2.5_noup' | 'roi_s3_up_scrfd' -> pipeline config dict."""
+    """'full' | 'roi_s3_up' | 'roi_s2.5_noup' | 'roi_s3_up_scrfd' | 'roi_s3_up_y0.5' -> pipeline config dict.
+
+    Optional suffixes after up/noup: an anchor ('scrfd' | 'blazeface') and/or 'y<shift>' (ROI centre moved
+    down by shift x face height; without it the config file's pipeline.roi_y_shift is used).
+    """
     if name == "full":
         return {"mode": "full"}
     parts = name.split("_")
     if parts[0] != "roi" or len(parts) < 3 or not parts[1].startswith("s") or parts[2] not in ("up", "noup"):
-        raise ValueError(f"bad config name '{name}' (expected full or roi_s<scale>_<up|noup>[_scrfd|_blazeface])")
+        raise ValueError(f"bad config name '{name}' (expected full or roi_s<scale>_<up|noup>[_scrfd][_y<shift>])")
     out = {"mode": "roi", "roi_scale": float(parts[1][1:]), "roi_upscale": parts[2] == "up",
            "face_anchor": "blazeface"}
-    if len(parts) > 3:
-        out["face_anchor"] = parts[3]
+    for tok in parts[3:]:
+        if tok in ("scrfd", "blazeface"):
+            out["face_anchor"] = tok
+        elif tok.startswith("y"):
+            out["roi_y_shift"] = float(tok[1:])
+        else:
+            raise ValueError(f"bad config suffix '{tok}' in '{name}'")
     return out
 
 

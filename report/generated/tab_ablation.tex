@@ -1,0 +1,30 @@
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{2.6pt}
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{4}{c}{MediaPipe} \\
+\cmidrule(lr){2-5}
+ & \multicolumn{2}{c}{BlazeFace} & \multicolumn{2}{c}{SCRFD} \\
+$s$ & all & far & all & far \\
+\midrule
+full frame & \multicolumn{4}{c}{72.9 / 63.6} \\
+\midrule
+2 & 41.1 & 63.2 & 2.5 & 3.0 \\
+3 (prop.) & 61.6 & 64.6 & 26.1 & 29.4 \\
+4 & 73.1 & 64.4 & 66.0 & 72.6 \\
+5 & 74.6 & 64.2 & 83.1 & 90.6 \\
+6 & 74.6 & 64.2 & \textbf{85.5} & \textbf{94.0} \\
+\midrule
+3, no up-scale & 62.8 & 64.8 &  &  \\
+3, shift $0.5h_f$ & 62.2 & 64.6 &  &  \\
+\midrule
+face found & 71.2 & 13.7 & 99.7 & 99.0 \\
+\bottomrule
+\end{tabular}
+\vspace{-1mm}
+\caption{\textbf{Ablation}: top-1 accuracy (\%) on all 4 conditions / far only, by ROI scale $s$ and face anchor; every cell uses the same detector weights and images. Bold: the configuration selected on the val split. ``face found'': \% of normal / far images in which the anchor found a face (otherwise the pipeline falls back to the full frame).}
+\label{tab:abl}
+\vspace{-3mm}
+\end{table}

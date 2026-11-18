@@ -1,0 +1,5 @@
+backend,config,n_background_attacks,background_hand_FAR,claimant_gesture_correct_in_crowded,wrong_gesture_FAR
+MediaPipe Gesture Recognizer (pretrained),full,396,0.2196969696969697,0.6666666666666666,0.013125
+MediaPipe Gesture Recognizer (pretrained),roi_s3_up,396,0.15404040404040403,0.6616161616161617,0.01075
+MediaPipe Gesture Recognizer (pretrained),roi_s6_up_scrfd,396,0.17676767676767677,0.7676767676767676,0.010375
+MediaPipe Gesture Recognizer (pretrained),roi_s3_up_scrfd,396,0.050505050505050504,0.2904040404040404,0.004625

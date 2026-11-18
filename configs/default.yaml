@@ -21,16 +21,18 @@ models:
 
 pipeline:
   mode: roi            # "roi" (ours: face-anchored cascade) or "full" (baseline)
-  face_anchor: blazeface  # "blazeface" (proposal) or "scrfd" (InsightFace detector; finds much smaller faces)
-  roi_scale: 3.0       # ROI side = scale x face box
+  # Deployed setting = the one chosen on the HaGRID val split for the MediaPipe backend (results/summary.json,
+  # scale_selection_on_val). The proposal's setting was blazeface / 3.0 / 0; see the report's ablation.
+  face_anchor: scrfd   # "scrfd" (InsightFace detector, finds small faces) or "blazeface" (proposal)
+  roi_scale: 6.0       # ROI side = scale x face box
   roi_upscale: true    # let the detector up-scale the crop to imgsz (false = paste crop at native resolution)
-  roi_y_shift: 0.5     # shift ROI centre down by this fraction of face height (hands are usually at chin/chest)
+  roi_y_shift: 0.0     # shift ROI centre down by this fraction of face height (0.5 made no difference in the ablation)
   fallback_full_frame: true   # if no face is found, run on the full frame instead of rejecting
   fallback_on_no_gesture: true  # live app: if the ROI shows no gesture, also try the full frame
                                 # (predict.py ignores this so the baseline-vs-ROI comparison stays controlled)
 
 verification:
-  face_threshold: 0.35        # cosine similarity; replace with the value from scripts/eval_face.py (LFW)
+  face_threshold: 0.2235      # cosine similarity; max-accuracy threshold on LFW DevTrain (scripts/eval_face.py, runs/face/threshold.json)
   duplicate_face_threshold: 0.50  # enrollment flagged if new face matches another enrolled student this well
 
 app:

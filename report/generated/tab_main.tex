@@ -1,0 +1,18 @@
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{lccccc}
+\toprule
+Pipeline & Normal & Low light & Far (2$\times$) & Crowded & All \\
+\midrule
+Baseline (full frame) & 91.0 & 67.0 & 63.6 & 70.0 & 72.9 \\
+Ours, $s{=}3$ (proposal) & 67.8 {\scriptsize($-$23.2$^\dagger$)} & 47.2 {\scriptsize($-$19.8$^\dagger$)} & 64.6 {\scriptsize(+1.0)} & 66.8 {\scriptsize($-$3.2)} & 61.6 {\scriptsize($-$11.3$^\dagger$)} \\
+Ours, $s^*{=}6$, SCRFD (val-sel.) & 93.8 {\scriptsize(+2.8$^\dagger$)} & 77.0 {\scriptsize(+10.0$^\dagger$)} & 94.0 {\scriptsize(+30.4$^\dagger$)} & 77.4 {\scriptsize(+7.4$^\dagger$)} & 85.5 {\scriptsize(+12.7$^\dagger$)} \\
+\bottomrule
+\end{tabular}
+\vspace{-1mm}
+\caption{\textbf{Main comparison} on the 100 held-out HaGRID subjects. Top-1 gesture accuracy (\%), with the paired change vs.\ the baseline in pp; $^\dagger$: exact McNemar $p<0.05$. Both pipelines use the \emph{same} pretrained MediaPipe Gesture Recognizer, scored on its 5 classes (2,000 images, 500 per condition). 95\% bootstrap CIs of the overall change are given in the text.}
+\label{tab:main}
+\vspace{-2mm}
+\end{table*}

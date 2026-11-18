@@ -1,0 +1,16 @@
+%% ------------------------------------------------------------------------------------------- Implementation
+\section{Implementation and attribution}
+\label{sec:impl}
+
+\noindent\textbf{Built by the team:} the ROI cascade (ROI geometry, crop/up-scale, coordinate mapping, fallback)
+and the controlled baseline; the attendance web app (3\,s rotating QR tokens, phone-bound tickets, random
+challenge, enrollment with instructor confirmation, flags, Excel reports); the HaGRID range-request fetcher, the
+four-condition test set and attack construction; all evaluation, statistics, latency and figure scripts; and the
+fine-tuned YOLOv8n weights.
+\textbf{External:} Ultralytics YOLOv8 code and COCO \texttt{yolov8n.pt} (AGPL-3.0); MediaPipe Gesture
+Recognizer and BlazeFace (Apache-2.0); InsightFace \texttt{buffalo\_s} SCRFD/ArcFace weights (non-commercial
+research); HaGRIDv2 images and annotations; LFW (threshold only); the CVPR author kit.
+\textbf{Generative AI:} an AI coding assistant (Claude, via Claude Code) wrote most of the code and first drafts
+of this report and the slides, under the team's direction. All numbers come from the released scripts; none
+was typed in by hand.
+Code, split and a one-command reproduction (\texttt{reproduce.ps1}, $\approx$2.5\,h on a CPU) are submitted.

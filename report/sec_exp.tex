@@ -1,0 +1,20 @@
+%% ------------------------------------------------------------------------------------------- Experiments
+\section{Experiments}
+\label{sec:exp}
+
+\noindent\textbf{Protocol.} Every configuration runs on the same 2,400 test images with the same pretrained
+detector. Face detection runs once per image and is shared by all ROI variants of that anchor
+(\texttt{predict.py}), so only the ROI geometry and the anchor change. The face threshold comes from LFW and the ROI
+settings come from the val set, never from test.
+\emph{Model selection}: the proposal fixed $s{=}3$ with BlazeFace, and we test that setting as pre-registered.
+We also choose the anchor and scale on the 1,200-image val set, built the same way from other subjects. The grid
+is \{BlazeFace, SCRFD\} $\times$ $s\in\{2,\dots,6\}$, ties go to BlazeFace and then to the smaller $s$, and the
+selected setting is evaluated on test once.
+
+\noindent\textbf{Metrics.} \emph{Quality}: top-1 gesture accuracy (the decision the app makes), with 95\%
+bootstrap CIs~\cite{efron}. \emph{Comparison}: the paired accuracy change, with a paired-bootstrap 95\% CI and an
+exact McNemar test~\cite{mcnemar} on the discordant images. \emph{Security}: background-hand FAR (crowded images,
+challenge = the other person's gesture) and end-to-end FRR/FAR with ArcFace. Each subject's first normal image is
+the enrollment; the other 23 images are probes. \emph{Cost}: median and p95 CPU latency per selfie, detector calls
+and model size. H1 holds if the overall gain is $\geq$5\,pp with a CI that excludes 0, and the extra median latency
+is $\leq$50\,ms.

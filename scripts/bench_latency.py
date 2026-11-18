@@ -19,7 +19,7 @@ import cv2
 import numpy as np
 import pandas as pd
 
-from gesture_attendance.config import load_config, merged, resolve_path
+from gesture_attendance.config import load_config, merged, parse_overrides, resolve_path
 from gesture_attendance.evaluation import parse_config_name
 from gesture_attendance.verify import build_gesture_pipeline
 from gesture_attendance.vision.downloads import CACHE_DIR
@@ -40,11 +40,12 @@ def main():
     ap.add_argument("--weights", default=None)
     ap.add_argument("--max-side", type=int, default=1280)
     ap.add_argument("--config", default=None)
+    ap.add_argument("--set", nargs="*", default=[], help="config overrides, e.g. pipeline.roi_y_shift=0")
     ap.add_argument("--out", type=Path, default=Path("runs/latency"))
     args = ap.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
 
-    cfg = load_config(args.config)
+    cfg = load_config(args.config, parse_overrides(args.set))
     if args.device is not None:
         cfg["models"]["device"] = args.device
 
@@ -100,6 +101,8 @@ def main():
         R["extra_vs_full_median_ms"] = R.median_ms - base
         R.loc[R.config.str.startswith("arcface"), "extra_vs_full_median_ms"] = float("nan")
     R.insert(0, "device", f"{m['device']} ({platform.processor() or platform.machine()})")
+    R.insert(1, "gesture_backend", "yolo" if args.weights else m.get("gesture_backend", "mediapipe"))
+    R.insert(2, "n_images", len(imgs))
     R.to_csv(args.out / f"latency_{str(m['device']).replace(':', '')}.csv", index=False)
 
     sizes = {"yolo_weights": resolve_path(args.weights or m["yolo_weights"]),

@@ -10,8 +10,12 @@ def test_parse_config_name():
     assert parse_config_name("full") == {"mode": "full"}
     p = parse_config_name("roi_s2.5_noup_scrfd")
     assert p == {"mode": "roi", "roi_scale": 2.5, "roi_upscale": False, "face_anchor": "scrfd"}
+    assert parse_config_name("roi_s3_up_y0.5")["roi_y_shift"] == 0.5
+    assert parse_config_name("roi_s3_up_scrfd_y0")["face_anchor"] == "scrfd"
     with pytest.raises(ValueError):
         parse_config_name("roi_3")
+    with pytest.raises(ValueError):
+        parse_config_name("roi_s3_up_bogus")
 
 
 def test_map_perfect_and_miss():

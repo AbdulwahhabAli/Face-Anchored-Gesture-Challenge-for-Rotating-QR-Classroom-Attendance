@@ -1,0 +1,5 @@
+file,device,gesture_backend,n_images,config,median_ms,p95_ms,mean_ms,gesture_median_ms,face_median_ms,crop_median_ms,extra_vs_full_median_ms
+latency_cpu.csv,"cpu (AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD)",mediapipe,100,full,15.640249999705702,22.198035015026107,17.305451995925978,15.636000025551766,,,0.0
+latency_cpu.csv,"cpu (AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD)",mediapipe,100,roi_s3_up,17.399449949152768,24.255865026498213,18.08398400200531,14.936149993445724,2.2414499544538558,0.1452000578865409,1.7591999494470656
+latency_cpu.csv,"cpu (AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD)",mediapipe,100,roi_s6_up_scrfd,22.084650001488626,28.74167994596064,22.953326997812837,16.14360004896298,5.7334500015713274,0.2562999725341797,6.444400001782924
+latency_cpu.csv,"cpu (AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD)",mediapipe,100,arcface (both pipelines),10.01344999531284,18.916649965103712,11.539115003542975,,,,

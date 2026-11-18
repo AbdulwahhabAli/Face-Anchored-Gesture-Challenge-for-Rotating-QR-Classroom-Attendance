@@ -1,0 +1,83 @@
+%% ------------------------------------------------------------------------------------------- Results
+\section{Results}
+\label{sec:results}
+
+\input{generated/tab_main}
+
+\noindent\textbf{Main comparison} (\cref{tab:main}). The \emph{pre-registered} cascade ($s{=}3$, BlazeFace)
+is worse than the baseline: \mpSAllD\,pp overall (95\% CI [\mpSAllLo, \mpSAllHi]) and \mpSNorD\,pp on normal
+images. It breaks \mpSAllBrk{} images and fixes only \mpSAllFix. With this setting \textbf{H1 is rejected}. The
+setting \emph{selected on val} ($s^*{=}\mpTScale$, SCRFD anchor; val accuracy \mpValSSixscrfd\% vs.\
+\mpValfull\% for the full frame) raises test accuracy from \mpBaseAllAcc\% to \mpTAllAcc\%, a gain of
+\mpTAllD\,pp (CI [\mpTAllLo, \mpTAllHi], McNemar $p\mpTAllP$; \mpTAllFix{} fixed vs.\ \mpTAllBrk{} broken). It
+improves every condition: \mpTFarD\,pp far, \mpTLowD\,pp low light, \mpTCroD\,pp crowded, and \mpTNorD\,pp normal
+($p{=}\mpTNorP$). The gain comes from where the hand is small or degraded, as hypothesised, and the extra median
+latency is \latExtramediapipe\,ms (\cref{tab:cost}). With the val-selected setting, \textbf{H1 is supported}.
+Note, however, that this is not the setting we fixed in advance.
+
+\input{generated/tab_ablation}
+
+\noindent\textbf{Ablation} (\cref{tab:abl}). \emph{ROI size} matters most. HaGRID subjects hold the hand beside
+the head, often more than one face-width away, so $s{\le}3$ cuts it off and accuracy falls far below the
+baseline. It rises up to $s{=}6$, the edge of our grid, so a larger $s$ could be better still.
+The \emph{anchor} decides the far condition. BlazeFace short-range finds a face in only \mpFaceSThreeUpnormal\% of
+normal and \mpFaceSThreeUpfar\% of far images, and otherwise falls back to the full frame, so BlazeFace ROIs
+cannot beat the baseline on far images. SCRFD finds a face in $\geq$98\% of the images in every condition.
+SCRFD boxes are tighter, so SCRFD needs $s{\ge}5$, but at that size it lifts far accuracy to
+\mpAccFarSSixUpScrfd\%.
+\emph{Up-scaling} and \emph{shifting the ROI} down by half a face change accuracy by ${\approx}1$\,pp at $s{=}3$.
+
+\input{generated/tab_cost}
+\input{generated/tab_security}
+
+\noindent\textbf{Cost} (\cref{tab:cost}). Both pipelines make one gesture-detector call. The cascade adds one
+face-detector call and a crop. With SCRFD the face detection can be shared with the identity branch, which runs
+SCRFD anyway, so in a deployed system the added cost is close to zero.
+
+\noindent\textbf{End to end} (\cref{tab:sec}). With face verification included, the val-selected cascade halves
+the false-reject rate (\mpFRRFull\%$\rightarrow$\mpFRRRoiSix\%; far: \mpFRRFullfar\%$\rightarrow$\mpFRRRoiSixfar\%).
+It also blocks the background-hand attack (\mpFARbgFull\%$\rightarrow$\mpFARbgRoiSix\%). With the ROI, the gesture
+and the verified face come from the same person: an attacker who copies a classmate's gesture is matched against
+the face next to that hand, and that face is not theirs. Impostor-face FAR stays below 1\%. On LFW-calibrated
+ArcFace, normal images give FRR \faceFRRnormal\% and FAR \faceFARnormal\%.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/qualitative.png}
+  \vspace{-1.5mm}
+  \caption{\textbf{Qualitative examples} (held-out test images, zoomed). White: ROI; cyan: anchor face;
+  orange: baseline's top detection; blue: ours. Top: successes of the val-selected ROI and the typical failure of
+  the proposal's $s{=}3$. Bottom: failures of the val-selected ROI.}
+  \label{fig:qual}
+  \vspace{-3mm}
+\end{figure*}
+
+%% ------------------------------------------------------------------------------------------- Failures
+\section{Failure analysis and limitations}
+\label{sec:fail}
+
+\noindent\textbf{Where it fails} (\cref{fig:qual}, bottom). Of the \mpTErrErrors{} errors of the val-selected
+cascade, \mpTErrNoDetectionInRoi{} are hands that MediaPipe misses inside the ROI. These are mostly in low light
+(\mpTErrErrorsLowLight{} errors) and in crowded images (\mpTErrErrorsCrowded). \mpTErrWrongClass{} are wrong
+classes and only \mpTErrNoFaceFound{} have no face. \mpTErrBaselineAlsoWrong{} of the \mpTErrErrors{} errors are also
+made by the baseline. (1)~\emph{Wrong anchor}: the ``largest face'' rule picks the background person in
+\mpWrongAnchorSSixUpScrfd\% of crowded images, because that person's face can be bigger in pixels. The genuine
+student is then rejected; the attack still fails, since the face does not match. (2)~\emph{ROI too small}: the
+proposal's $s{=}3$ cuts off hands held at arm's length (top right). The ROI size is a property of how users pose,
+so it must be validated on the target population. (3)~\emph{Replay}: a stored photo passes a random 1-of-5
+challenge within 3 attempts 36.7--46.5\% of the time, whichever pipeline is used. The gesture challenge alone is weak liveness;
+two-gesture challenges or fewer attempts are needed.
+
+\noindent\textbf{Bias.} On HaGRID's automatic labels (aggregated per subject), the val-selected cascade scores
+\mpBiasTgenderfemale\% for female and \mpBiasTgendermale\% for male subjects, and \mpBiasTagegroupYoung\% for
+subjects under 25 vs.\ \mpBiasTagegroupOld\% for those over 40. This narrows the baseline's age gap
+(\mpBiasFullagegroupYoung\% vs.\ \mpBiasFullagegroupOld\%). Only \mpBiasNraceBlack{} Black, \mpBiasNraceAsian{} Asian
+and \mpBiasNraceIndian{} Indian subjects are in the test set, too few for conclusions about race. Face verification
+bias was not measured per group.
+
+\noindent\textbf{Limitations.} The far, low-light and crowded conditions are \emph{synthetic}: real distance also
+blurs the image and real low light changes the noise. We did not collect the planned classroom volunteer set, so
+there are no real phone selfies from our own population; this is the most important missing evidence. HaGRID
+subjects are 80\% White. The tested scales stop at the grid edge. Only one gesture detector was evaluated.
+InsightFace weights are licensed for non-commercial research only, and storing face embeddings needs consent and a
+deletion policy. The app keeps only embeddings and lets the instructor delete them.
