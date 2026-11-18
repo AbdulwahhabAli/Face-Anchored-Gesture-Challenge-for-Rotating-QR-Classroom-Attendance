@@ -18,3 +18,8 @@ models/
 *.sqlite
 data/app/
 tools/
+
+# LaTeX build logs
+report/*.log
+report/*.blg
+report/*.aux

@@ -1,0 +1,6 @@
+model,size_MB
+yolo_weights,
+mediapipe_gesture,7.99
+blazeface,0.22
+scrfd_det_500m,2.41
+arcface_w600k_mbf,12.99

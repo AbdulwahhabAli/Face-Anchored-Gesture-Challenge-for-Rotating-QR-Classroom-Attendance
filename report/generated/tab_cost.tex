@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccc}
+\toprule
+Pipeline & median & p95 & extra \\
+\midrule
+full frame & 15.6 & 22.2 & -- \\
+ROI $s{=}3$, BlazeFace & 17.4 & 24.3 & +1.8 \\
+ROI $s{=}6$, SCRFD & 22.1 & 28.7 & +6.4 \\
+\midrule
+SCRFD + ArcFace (both) & 10.0 & 18.9 & -- \\
+\bottomrule
+\end{tabular}
+\vspace{-1mm}
+\caption{\textbf{Cost}: CPU latency per selfie in ms (100 native-resolution test images, cpu, Ryzen 7 7800X3D, decode excluded). The ROI pipeline includes the anchor face detector and the crop, and makes one face-detector call plus one gesture-detector call per image. Model sizes: MediaPipe GR 8.0\,MB, BlazeFace 0.22\,MB, SCRFD 2.4\,MB, ArcFace 13.0\,MB.}
+\label{tab:cost}
+\vspace{-3mm}
+\end{table}

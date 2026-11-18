@@ -1,0 +1,75 @@
+{
+  "face_threshold": {
+    "threshold": 0.22350655496120453,
+    "criterion": "max accuracy on LFW DevTrain",
+    "lfw_train_acc": 0.9968181818181818,
+    "lfw_train_eer": 0.006363636363636364,
+    "n_pairs": 2200,
+    "lfw_test_acc": 0.989,
+    "lfw_test_FAR": 0.004,
+    "lfw_test_FRR": 0.018
+  },
+  "face_on_eval_set": [
+    {
+      "backend": "ArcFace (shared)",
+      "n_genuine": 498,
+      "n_impostor": 49302,
+      "FRR_normal": 0.002008032128514056,
+      "FAR_normal": 0.009411382905358808,
+      "no_face_rate_by_condition": {
+        "normal": 0.0033333333333332993,
+        "low_light": 0.018333333333333313,
+        "far": 0.010000000000000009,
+        "crowded": 0.0
+      }
+    }
+  ],
+  "error_taxonomy": {
+    "mediapipe": {
+      "s3 (pre-registered)": {
+        "config": "roi_s3_up",
+        "errors": 768,
+        "no_face_found": 380,
+        "no_detection_in_roi": 356,
+        "wrong_class": 32,
+        "baseline_also_wrong": 485,
+        "errors_normal": 161,
+        "errors_low_light": 264,
+        "errors_far": 177,
+        "errors_crowded": 166
+      },
+      "s* (val-selected)": {
+        "config": "roi_s6_up_scrfd",
+        "errors": 289,
+        "no_face_found": 16,
+        "no_detection_in_roi": 189,
+        "wrong_class": 84,
+        "baseline_also_wrong": 216,
+        "errors_normal": 31,
+        "errors_low_light": 115,
+        "errors_far": 30,
+        "errors_crowded": 113
+      }
+    }
+  },
+  "scale_selection_on_val": {
+    "mediapipe": {
+      "selected": "roi_s6_up_scrfd",
+      "val_accuracy": {
+        "full": 0.696,
+        "roi_s2_up": 0.357,
+        "roi_s3_up": 0.589,
+        "roi_s4_up": 0.697,
+        "roi_s5_up": 0.718,
+        "roi_s6_up": 0.707,
+        "roi_s2_up_scrfd": 0.044,
+        "roi_s3_up_scrfd": 0.314,
+        "roi_s4_up_scrfd": 0.65,
+        "roi_s5_up_scrfd": 0.783,
+        "roi_s6_up_scrfd": 0.814
+      },
+      "n_val": 1200,
+      "rule": "argmax val top-1 over anchor {BlazeFace, SCRFD} x s {2..6}; ties: BlazeFace, smaller s"
+    }
+  }
+}

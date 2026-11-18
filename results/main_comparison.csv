@@ -1,0 +1,11 @@
+backend,variant,ours_config,condition,n,full_acc,full_lo,full_hi,ours_acc,ours_lo,ours_hi,delta_pp,delta_lo_pp,delta_hi_pp,p_value,fixed,broken
+MediaPipe Gesture Recognizer (pretrained),s3 (pre-registered),roi_s3_up,normal,500,0.91,0.884,0.934,0.678,0.636,0.718,-23.2,-27.0,-19.600000000000005,1.1387963575850963e-31,3,119
+MediaPipe Gesture Recognizer (pretrained),s3 (pre-registered),roi_s3_up,low_light,500,0.67,0.63,0.71,0.472,0.42995,0.518,-19.800000000000008,-23.600000000000005,-15.800000000000002,2.0723909491809205e-20,14,113
+MediaPipe Gesture Recognizer (pretrained),s3 (pre-registered),roi_s3_up,far,500,0.636,0.596,0.676,0.646,0.606,0.688,1.0000000000000009,-0.6000000000000005,2.6000000000000023,0.332305908203125,11,6
+MediaPipe Gesture Recognizer (pretrained),s3 (pre-registered),roi_s3_up,crowded,500,0.7,0.662,0.742,0.668,0.626,0.71,-3.1999999999999917,-6.799999999999995,0.20000000000000018,0.08050685743008208,29,45
+MediaPipe Gesture Recognizer (pretrained),s3 (pre-registered),roi_s3_up,all,2000,0.729,0.7095,0.7475,0.616,0.5945,0.6365,-11.299999999999999,-13.050000000000006,-9.600000000000009,3.733568721289606e-37,57,283
+MediaPipe Gesture Recognizer (pretrained),s* (val-selected),roi_s6_up_scrfd,normal,500,0.91,0.884,0.934,0.938,0.916,0.958,2.7999999999999914,0.9999999999999898,4.799999999999994,0.009355306625366211,20,6
+MediaPipe Gesture Recognizer (pretrained),s* (val-selected),roi_s6_up_scrfd,low_light,500,0.67,0.63,0.71,0.77,0.736,0.806,9.999999999999998,6.400000000000006,14.000000000000002,2.2605981543610277e-07,72,22
+MediaPipe Gesture Recognizer (pretrained),s* (val-selected),roi_s6_up_scrfd,far,500,0.636,0.596,0.676,0.94,0.918,0.96,30.399999999999995,26.200000000000003,34.599999999999994,2.189072742226172e-39,158,6
+MediaPipe Gesture Recognizer (pretrained),s* (val-selected),roi_s6_up_scrfd,crowded,500,0.7,0.662,0.742,0.774,0.738,0.812,7.400000000000007,3.400000000000003,11.399999999999999,0.0007171910479201684,76,39
+MediaPipe Gesture Recognizer (pretrained),s* (val-selected),roi_s6_up_scrfd,all,2000,0.729,0.7095,0.7475,0.8555,0.8405,0.8710125,12.650000000000006,10.748749999999992,14.450000000000006,2.940859604646892e-39,326,73

@@ -1,0 +1,14 @@
+\begin{abstract}
+QR-code attendance is easy to cheat: a photo of the code can be forwarded to an absent student. Our system asks
+the student for a selfie showing a \emph{random hand gesture} next to their face. A check-in is accepted only if
+the gesture matches the challenge and the face matches the enrolled ArcFace embedding. Gestures are small in a
+phone photo and classmates' hands are often visible, so we propose a \emph{face-anchored ROI cascade}: detect the
+selfie-taker's face, crop a window of $s\times$ the face box at native resolution, and run the same gesture
+detector on the crop. On 2,400 test images of 100 held-out HaGRID subjects under four conditions (normal, low
+light, far, crowded), the ROI size fixed in our proposal ($s{=}3$, BlazeFace anchor) \emph{lowers} top-1 accuracy
+by \mpSAllD\,pp, because it cuts off hands held beside the head. The setting chosen on a separate validation set
+($s{=}\mpTScale$, SCRFD anchor) raises accuracy from \mpBaseAllAcc\% to \mpTAllAcc\% (\mpTAllD\,pp, 95\% CI
+[\mpTAllLo, \mpTAllHi]) for \latExtramediapipe\,ms of CPU latency. The gain is +\,30\,pp for distant subjects.
+End to end, it cuts the background-hand attack acceptance from \mpFARbgFull\% to \mpFARbgRoiSix\% and halves
+false rejections.
+\end{abstract}

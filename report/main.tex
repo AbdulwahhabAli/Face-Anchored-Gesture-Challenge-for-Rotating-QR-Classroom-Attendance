@@ -1,0 +1,45 @@
+% CSBP441 Phase 2 final report - CVPR author kit (tools/cvpr_kit, CVPR2027-v1), camera-ready mode
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage[pagenumbers]{cvpr}
+
+% tectonic is XeTeX: the Type-1 `times` package has no TU encoding, so load the Times/Helvetica/Courier clones
+\usepackage{fontspec}
+\setmainfont{texgyretermes}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
+\setsansfont{texgyreheros}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
+\setmonofont{texgyrecursor}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
+\usepackage{multirow}
+\usepackage{microtype}
+\setlength{\abovecaptionskip}{3pt}
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{8pt plus 2pt minus 2pt}
+\definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
+\usepackage[breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
+
+\input{generated/numbers.tex}
+
+\def\confName{CSBP441}
+\def\confYear{2026}
+
+\title{Face-Anchored Gesture Challenge for Rotating-QR Classroom Attendance}
+
+\author{Abdulwahhab Ali \qquad Yazan Badawie\\
+CSBP441 Computer Vision, Fall 2026 --- Phase 2 final report}
+
+\begin{document}
+\maketitle
+
+\input{sec_abstract}
+\input{sec_intro_method}
+\input{sec_data}
+\input{sec_exp}
+\input{sec_results}
+\input{sec_impl}
+
+{
+\small
+\bibliographystyle{ieeenat_fullname}
+\bibliography{refs}
+}
+
+\end{document}

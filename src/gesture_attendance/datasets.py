@@ -59,7 +59,9 @@ def load_hagrid_split(root: str | Path, split: str = "test", class_names: list[s
                     c, cx, cy, bw, bh = line.split()
                     cx, cy, bw, bh = float(cx) * w, float(cy) * h, float(bw) * w, float(bh) * h
                     gt.append((class_names[int(c)], Box(cx - bw / 2, cy - bh / 2, cx + bw / 2, cy + bh / 2)))
-            out.append(Sample(img, row["gesture"], row["user_id"], "hagrid", None, gt))
+            cond = (row.get("condition") or "").strip() or "hagrid"   # set by scripts/make_conditions.py
+            bg = (row.get("background_gesture") or "").strip() or None
+            out.append(Sample(img, row["gesture"], row["user_id"], cond, bg, gt))
     return out
 
 

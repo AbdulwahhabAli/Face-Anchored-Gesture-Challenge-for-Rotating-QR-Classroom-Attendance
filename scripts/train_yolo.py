@@ -30,6 +30,8 @@ def main():
     ap.add_argument("--seed", type=int, default=441)
     ap.add_argument("--fraction", type=float, default=1.0, help="fraction of train set (smoke tests)")
     ap.add_argument("--workers", type=int, default=2)
+    ap.add_argument("--cache", default=False, help="'ram' caches decoded images (much faster on CPU)")
+    ap.add_argument("--patience", type=int, default=100)
     ap.add_argument("--name", default="gesture_yolov8n")
     ap.add_argument("--project", default=str(REPO_ROOT / "runs" / "train"))
     args = ap.parse_args()
@@ -46,7 +48,7 @@ def main():
     model = YOLO(args.model)
     model.train(data=str(local_yaml), epochs=args.epochs, imgsz=args.imgsz, batch=args.batch,
                 device=args.device, seed=args.seed, deterministic=True, fraction=args.fraction,
-                workers=args.workers, project=args.project, name=args.name, exist_ok=True,
+                workers=args.workers, cache=args.cache, patience=args.patience, project=args.project, name=args.name, exist_ok=True,
                 # left-right flips are fine for these gestures; keep the rest at Ultralytics defaults
                 fliplr=0.5)
 

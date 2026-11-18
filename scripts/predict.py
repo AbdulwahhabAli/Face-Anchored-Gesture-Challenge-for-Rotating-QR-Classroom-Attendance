@@ -40,6 +40,8 @@ def main():
     ap.add_argument("--embeddings", action=argparse.BooleanOptionalAction, default=None,
                     help="also save ArcFace embeddings (default: on for classroom)")
     ap.add_argument("--limit", type=int, default=0, help="only the first N images (debugging)")
+    ap.add_argument("--append", action="store_true",
+                    help="add --configs to an existing --out run (same images); keeps its CSVs and embeddings")
     args = ap.parse_args()
 
     cfg = load_config(args.config, parse_overrides(args.set))
@@ -49,6 +51,12 @@ def main():
         samples = samples[: args.limit]
     print(f"{len(samples)} images, configs: {args.configs}")
     args.out.mkdir(parents=True, exist_ok=True)
+    prev_configs = []
+    if args.append and (args.out / "run_info.json").exists():
+        prev_configs = json.loads((args.out / "run_info.json").read_text())["configs"]
+        args.configs = [c for c in args.configs if c not in prev_configs]
+        args.embeddings = False
+        print(f"appending {args.configs} to {prev_configs}")
 
     from gesture_attendance.verify import build_gesture_detector
     yolo = build_gesture_detector(cfg, args.weights)  # gesture detector (MediaPipe or YOLO, per config)
@@ -75,7 +83,7 @@ def main():
         else:
             pipelines[name] = FaceAnchoredROIPipeline(
                 yolo, anchors[p["face_anchor"]], scale=p["roi_scale"], upscale=p["roi_upscale"],
-                y_shift=cfg["pipeline"].get("roi_y_shift", 0.0),
+                y_shift=p.get("roi_y_shift", cfg["pipeline"].get("roi_y_shift", 0.0)),
                 fallback_full_frame=cfg["pipeline"].get("fallback_full_frame", True), imgsz=m.get("imgsz", 640))
 
     rows = {n: [] for n in args.configs}
@@ -126,7 +134,7 @@ def main():
                  emb=np.stack(emb_list), has_face=np.array(has_face))
         print(f"embeddings -> {args.out / 'embeddings.npz'}")
     (args.out / "run_info.json").write_text(json.dumps({
-        "dataset": args.dataset, "root": str(args.root), "configs": args.configs,
+        "dataset": args.dataset, "root": str(args.root), "configs": prev_configs + args.configs,
         "gesture_backend": "yolo" if args.weights else m.get("gesture_backend", "mediapipe"),
         "weights": str(args.weights or m["yolo_weights"]), "classes": cfg["gestures"],
         "n_images": len(samples)}, indent=2))

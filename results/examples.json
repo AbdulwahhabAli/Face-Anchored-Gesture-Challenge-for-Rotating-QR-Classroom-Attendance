@@ -1,0 +1,53 @@
+{
+ "preds": "runs\\preds\\mediapipe",
+ "backend": "mediapipe",
+ "qualitative": [
+  {
+   "file": "images\\test\\far__peace_32ef44ba-46d0-45b0-9e03-f658a0e199fa.jpg",
+   "config": "roi_s6_up_scrfd",
+   "caption": "fixed by ROI (far)"
+  },
+  {
+   "file": "images\\test\\low_light__fist_8866be81-a1bd-47d3-a2a6-c61862e1ec55.jpg",
+   "config": "roi_s6_up_scrfd",
+   "caption": "fixed by ROI (low light)"
+  },
+  {
+   "file": "images\\test\\crowded__like_04fe2199-ea04-4a34-a5c5-733282629146.jpg",
+   "config": "roi_s6_up_scrfd",
+   "caption": "fixed by ROI (crowded)"
+  },
+  {
+   "file": "images\\test\\normal__fist_f3e48554-69e4-4683-ade0-aca7b2144b73.jpg",
+   "config": "roi_s3_up",
+   "caption": "s=3 cuts the hand off"
+  }
+ ],
+ "failures": [
+  {
+   "file": "images\\test\\crowded__like_32edec0c-bccb-423f-a6d6-7c7da64b0dd1.jpg",
+   "config": "roi_s6_up_scrfd",
+   "caption": "anchored on the other person (true like)"
+  },
+  {
+   "file": "images\\test\\low_light__peace_5f97dfe8-c010-40aa-8081-b4428f3bc46d.jpg",
+   "config": "roi_s6_up_scrfd",
+   "caption": "missed in low light (true peace)"
+  },
+  {
+   "file": "images\\test\\normal__peace_9be237c6-9097-4127-ad3c-8d74ac72d708.jpg",
+   "config": "roi_s6_up_scrfd",
+   "caption": "gesture confused (true peace)"
+  },
+  {
+   "file": "images\\test\\far__palm_354ace57-498a-4926-9ca1-0824b6d14ccc.jpg",
+   "config": "roi_s6_up_scrfd",
+   "caption": "ROI misses a visible hand (true palm)"
+  }
+ ],
+ "labels": {
+  "roi_s3_up": "ours s=3",
+  "roi_s6_up_scrfd": "ours s*=6 (SCRFD)"
+ },
+ "conditions_source": "fist_1a783353-0622-469c-8c00-018c333bf896.jpg"
+}
